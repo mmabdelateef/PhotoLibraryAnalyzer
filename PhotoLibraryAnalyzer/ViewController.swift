@@ -14,7 +14,7 @@ class ViewController: UIViewController {
     var allPhotos: PHFetchResult<PHAsset>!
     
     fileprivate let imageManager = PHCachingImageManager()
-    private let classificationQueue = DispatchQueue(label: "ClassificationQueue",qos: .userInitiated)
+//    private let classificationQueue = DispatchQueue(label: "ClassificationQueue",qos: .userInitiated)
     private let dispatchGroup = DispatchGroup()
     
     override func viewDidLoad() {
@@ -51,11 +51,22 @@ class ViewController: UIViewController {
         }
     }
     
+    lazy var classificationQueue: OperationQueue = {
+      var queue = OperationQueue()
+      queue.name = "Download queue"
+      queue.maxConcurrentOperationCount = 1
+      return queue
+    }()
+    
     func analyze(image: UIImage) {
-        classificationQueue.async {
-            print("Analyzing ******")
+        print("Start Analyzing *****************")
+        let classificationOperation = ImageClassification(image: image)
+        classificationOperation.completionBlock = {
+            print("finish Analyzing *****************")
+            print("Results = \(classificationOperation.result!)")
             self.dispatchGroup.leave()
         }
+        classificationQueue.addOperation(classificationOperation)
     }
 }
 
