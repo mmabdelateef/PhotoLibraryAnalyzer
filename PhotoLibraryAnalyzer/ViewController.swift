@@ -37,14 +37,8 @@ class ViewController: UIViewController {
         options.isNetworkAccessAllowed = true
         (0..<allPhotos.count).forEach { idx in
             dispatchGroup.enter()
-            let asset = allPhotos.object(at: idx)
-            PHImageManager.default().requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: options,
-                                                      resultHandler: { image, _ in
-                                                        guard let image = image else { return }
-                                                        self.analyze(image: image)
-                                                        
-            })
-            }
+            analyze(asset: allPhotos.object(at: idx))
+        }
         
         dispatchGroup.notify(queue: .main) {
             completion()
@@ -58,9 +52,9 @@ class ViewController: UIViewController {
       return queue
     }()
     
-    func analyze(image: UIImage) {
+    func analyze(asset: PHAsset) {
         print("Start Analyzing *****************")
-        let classificationOperation = ImageClassification(image: image)
+        let classificationOperation = ImageClassification(asset: asset)
         classificationOperation.completionBlock = {
             print("finish Analyzing *****************")
             print("Results = \(classificationOperation.result!)")

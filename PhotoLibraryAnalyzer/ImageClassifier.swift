@@ -10,6 +10,7 @@ import Foundation
 import Vision
 import CoreML
 import UIKit
+import Photos
 
 
 struct ClassificationResult: CustomStringConvertible {
@@ -22,17 +23,33 @@ struct ClassificationResult: CustomStringConvertible {
 }
 
 class ImageClassification: Operation {
-    private let image: UIImage
-    private(set) var result: [ClassificationResult]? 
+    private let asset: PHAsset
+    private(set) var result: [ClassificationResult]?
     
-    init(image: UIImage) {
-        self.image = image
+    static let phImageRequestOptions: PHImageRequestOptions = {
+        let options = PHImageRequestOptions()
+        options.deliveryMode = .highQualityFormat
+        options.isNetworkAccessAllowed = true
+        return options
+    } ()
+        
+    
+    init(asset: PHAsset) {
+        self.asset = asset
     }
     
     let dispatchGroup = DispatchGroup()
     override func main() {
         dispatchGroup.enter()
-        performClassifications(for: image)
+        PHImageManager.default().requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: ImageClassification.phImageRequestOptions,
+                                                  resultHandler: { image, _ in
+                                                    guard let image = image else {
+                                                        print("Can't retreive asset image")
+                                                        self.dispatchGroup.leave()
+                                                        return
+                                                    }
+                                                    self.performClassifications(for: image)
+        })
         dispatchGroup.wait()
     }
     
