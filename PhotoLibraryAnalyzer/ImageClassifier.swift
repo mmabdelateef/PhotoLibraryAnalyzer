@@ -59,24 +59,34 @@ class ImageClassification: Operation {
     
     
     /// - Tag: MLModelSetup
-       private lazy var classificationRequest: VNCoreMLRequest = {
-           do {
-               /*
-                Use the Swift class `MobileNet` Core ML generates from the model.
-                To use a different Core ML classifier model, add it to the project
-                and replace `MobileNet` with that model's generated Swift class.
-                */
-               let model = try VNCoreMLModel(for: MobileNetV2().model)
-               
-               let request = VNCoreMLRequest(model: model, completionHandler: { [weak self] request, error in
-                   self?.processClassifications(for: request, error: error)
-               })
-               request.imageCropAndScaleOption = .centerCrop
-               return request
-           } catch {
-               fatalError("Failed to load Vision ML model: \(error)")
-           }
+        
+    static let models = [
+        MobileNetV2().model,        
+    ]
+    
+    static let classificationRequests: [VNCoreMLRequest] = {
+            return models.map {
+                do {
+                let model = try VNCoreMLModel(for: $0)
+                let request = VNCoreMLRequest(model: model)
+                request.imageCropAndScaleOption = .centerCrop
+                return request
+                } catch {
+                    fatalError("Failed to load Vision ML model: \(error)")
+                }
+            }
        }()
+    
+    static let classificationRequest2: VNCoreMLRequest = {
+        do {
+            let model = try VNCoreMLModel(for: MobileNetV2().model)
+            let request = VNCoreMLRequest(model: model)
+            request.imageCropAndScaleOption = .centerCrop
+            return request
+        } catch {
+            fatalError("Failed to load Vision ML model: \(error)")
+        }
+    }()
     
     /// - Tag: PerformRequests
     private func performClassifications(for image: UIImage) {
@@ -87,7 +97,8 @@ class ImageClassification: Operation {
         DispatchQueue.global(qos: .userInitiated).async {
             let handler = VNImageRequestHandler(ciImage: ciImage, orientation: orientation)
             do {
-                try handler.perform([self.classificationRequest])
+                try handler.perform(ImageClassification.classificationRequests)
+                self.processRequests(ImageClassification.classificationRequests)
             } catch {
                 /*
                  This handler catches general image processing errors. The `classificationRequest`'s
@@ -100,24 +111,28 @@ class ImageClassification: Operation {
     }
     
     /// - Tag: ProcessClassifications
-    private func processClassifications(for request: VNRequest, error: Error?) {
+    private func processRequests(_ requests: [VNRequest]) {
+        guard let observations = (requests.compactMap { $0.results }.flatMap { $0 }) as? [VNClassificationObservation] else {
+            print("Unable to classify image")
+            self.dispatchGroup.leave()
+            return
+        }
+        
+        processObservations(observations)
+    }
+    
+    private func processObservations(_ observations: [VNClassificationObservation]) {
         defer {
             dispatchGroup.leave()
         }
         
-        guard let classifications = request.results as? [VNClassificationObservation] else {
-            print("Unable to classify image.\n\(error!.localizedDescription)")
-            return
-        }
-        
-        
-        guard !classifications.isEmpty else {
+        guard !observations.isEmpty else {
             print("Nothing reconized")
             return
         }
         
-        result = classifications
-            .filter{ $0.confidence > 0.3 }
+        result = observations
+            .filter{ $0.confidence > 0.35 }
             .map{ ClassificationResult(confidence: $0.confidence, identifier: $0.identifier) }
     }
     
