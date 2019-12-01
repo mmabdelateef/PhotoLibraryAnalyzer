@@ -16,15 +16,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PQd-nR-MFc">
-                                <rect key="frame" x="180" y="832" width="54" height="30"/>
-                                <state key="normal" title="Analyze"/>
-                                <connections>
-                                    <action selector="analyzeBtn_didClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Y53-lf-tU8"/>
-                                </connections>
-                            </button>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="PGP-7f-86q">
-                                <rect key="frame" x="16" y="44" width="382" height="762"/>
+                                <rect key="frame" x="16" y="44" width="382" height="809"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="29b-MU-cuz">
                                     <size key="itemSize" width="88" height="86"/>
@@ -38,21 +31,38 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="4zV-iz-reU"/>
                                 </connections>
                             </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PQd-nR-MFc">
+                                <rect key="frame" x="180" y="612" width="54" height="30"/>
+                                <state key="normal" title="Analyze"/>
+                                <connections>
+                                    <action selector="analyzeBtn_didClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Y53-lf-tU8"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Analyizing Photos Library" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BEh-FQ-3I8">
+                                <rect key="frame" x="76.5" y="433.5" width="261.5" height="29"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
+                            <constraint firstItem="BEh-FQ-3I8" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="31p-5u-V4C"/>
                             <constraint firstItem="PGP-7f-86q" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="6H2-uR-BaI"/>
                             <constraint firstItem="PGP-7f-86q" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="NwL-bt-21J"/>
-                            <constraint firstItem="PQd-nR-MFc" firstAttribute="top" secondItem="PGP-7f-86q" secondAttribute="bottom" constant="26" id="UBs-Zb-Hrw"/>
                             <constraint firstItem="PQd-nR-MFc" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="f6P-0u-QYu"/>
-                            <constraint firstItem="PQd-nR-MFc" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="kmE-Mi-Wrb"/>
+                            <constraint firstItem="PQd-nR-MFc" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" multiplier="1.4" id="nd9-Po-SbI"/>
+                            <constraint firstItem="BEh-FQ-3I8" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="sk1-Dc-K64"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="PGP-7f-86q" secondAttribute="bottom" constant="9" id="t2E-qv-GZC"/>
                             <constraint firstItem="PGP-7f-86q" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" constant="-16" id="zr9-mu-qEX"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="analyzeBtn" destination="PQd-nR-MFc" id="jgQ-61-LG1"/>
                         <outlet property="collectionView" destination="PGP-7f-86q" id="RgM-fa-7Wx"/>
                         <outlet property="collectionViewFlowLayout" destination="29b-MU-cuz" id="Ec4-jx-lpA"/>
+                        <outlet property="loadingLabel" destination="BEh-FQ-3I8" id="xAO-qZ-9Sg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
