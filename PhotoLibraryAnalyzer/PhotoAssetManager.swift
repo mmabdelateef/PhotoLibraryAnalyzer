@@ -36,6 +36,20 @@ class PhotoAssetManager {
         }
     }
 
+    static func requestFullSizeImage(for asset: PHAsset) -> UIImage? {
+        let options = PHImageRequestOptions()
+        options.deliveryMode = .highQualityFormat
+        options.isNetworkAccessAllowed = true
+        options.isSynchronous = true
+        
+        var image: UIImage?
+        PHImageManager.default().requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: options, resultHandler: { result, _ in
+                image = result
+        })
+        
+        return image
+    }
+    
     // MARK: Asset Caching
     
 

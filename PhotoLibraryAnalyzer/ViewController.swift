@@ -82,7 +82,8 @@ class ViewController: UIViewController {
     private var allPhotos: PHFetchResult<PHAsset> = PhotoAssetManager.shared.allPhotos
     
     func analyzeAllAssets(completion: @escaping () -> Void) {
-        (0..<allPhotos.count).forEach { idx in
+        let assetsToAnalyze = allPhotos//.objects(at: IndexSet(integersIn: 0...30))
+        (0..<assetsToAnalyze.count).forEach { idx in
             dispatchGroup.enter()
             analyze(asset: allPhotos.object(at: idx))
         }

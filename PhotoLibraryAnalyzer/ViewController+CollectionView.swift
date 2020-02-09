@@ -52,6 +52,17 @@ extension ViewController: UICollectionViewDataSource {
     }
 }
 
+extension ViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let asset = data?[indexPath.section].value[indexPath.item] else {
+            assertionFailure()
+            return
+        }
+        let imageVC = ImageViewController(asset: asset)
+        present(imageVC, animated: true)
+    }
+}
+
 extension ViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         updateCachedAssets()

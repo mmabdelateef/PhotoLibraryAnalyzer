@@ -132,7 +132,7 @@ class ImageClassification: Operation {
         }
         
         result = observations
-            .filter{ $0.confidence > 0.35 }
+            .filter{ $0.confidence > 0.15 }
             .map{ ClassificationResult(confidence: $0.confidence, identifier: $0.identifier) }
     }
     
